@@ -24,3 +24,17 @@ and use `slide_window` with it to control the width of the sliding window
 * PRETTIFY GRAPH
 * Better `loggenerator` (one with map kind of thing for better interlacing)
 * logging (and testing in the `FuncAnimation`'s function)
+
+## Things used (not in detail)
+* File opening
+* Reading till somewhere
+* matplotlib FuncAnimation and plotting
+* partial functions (very cool feature)
+* sleeping a thread
+* random number generation
+* measuring time
+* getting time in date format
+* collections.deque
+* argParse
+* regex
+  * and the plague
