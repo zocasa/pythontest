@@ -47,9 +47,10 @@ if __name__ == "__main__":
 
     # define and adjust figure
     fig, ax = plt.subplots(constrained_layout=True)
+    f = functools.partial(my_function, should_slide=False)
 
     for i in range(100):
         # animate
-        ani = animation.FuncAnimation(fig, functools.partial(my_function, should_slide=False), interval=1000)
+        ani = animation.FuncAnimation(fig, f, interval=1000)
 
         plt.show()
