@@ -1,5 +1,6 @@
 import argparse
 import collections
+import datetime
 import functools
 
 import matplotlib.animation as animation
@@ -27,7 +28,7 @@ def parse_graph_coordinates(source_lines):
         if match:
             sub_pattern = re.compile(r'\d+')
             datapoint = sub_pattern.findall(match.group())
-            x.append(datapoint[0])
+            x.append(datetime.datetime.fromtimestamp(datapoint[0]))
             y.append(datapoint[1])
 
     return x, y

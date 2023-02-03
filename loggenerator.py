@@ -1,4 +1,3 @@
-import datetime
 import random
 import time
 
@@ -25,7 +24,7 @@ sporadic_line_2 = "Inception\n"
 sporadic_lines = [sporadic_line_1, sporadic_line_2]
 
 # 10%
-target_line_1 = "x is: " + str(int(time.time())) + ", y is : " + str(random.randrange(20*scale, 100*scale)/scale) + ".\n"
+target_line_1 = "x is: " + str(time.time()) + ", y is : " + str(random.randrange(20*scale, 100*scale)/scale) + ".\n"
 target_lines = [target_line_1]
 
 

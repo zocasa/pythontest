@@ -6,7 +6,6 @@ import time
 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import numpy as np
 
 # stolen from https://towardsdatascience.com/plotting-live-data-with-matplotlib-d871fac7500b
 if __name__ == "__main__":
