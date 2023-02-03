@@ -7,6 +7,8 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import re
 
+import filehandler
+
 
 def get_graph_title():
     arg_parser = argparse.ArgumentParser()
@@ -34,13 +36,13 @@ def parse_timestamp_and_digit_graph_coordinates(source_lines):
     return x, y
 
 
-def create_graph(poller, stream, should_slide=True, slide_window=20):
+def create_graph(file, should_slide=True, slide_window=20):
     x = collections.deque()
     y = collections.deque()
 
     fig, subplot = plt.subplots(constrained_layout=True)
 
-    f = functools.partial(update_graph, plot=subplot, poller=poller, stream=stream,
+    f = functools.partial(update_graph, plot=subplot, file=file,
                           should_slide=should_slide, slide_window=slide_window, x=x, y=y)
     # Die but do not delete the variable assignment
     ani = animation.FuncAnimation(fig, f, interval=1)
@@ -50,14 +52,13 @@ def create_graph(poller, stream, should_slide=True, slide_window=20):
     return fig, subplot
 
 
-def update_graph(frame, plot, poller, stream, should_slide, slide_window, x, y):
+def update_graph(frame, plot, file, should_slide, slide_window, x, y):
     plot.cla()
 
     _x = collections.deque()
     _y = collections.deque()
 
-    if poller.poll(999):
-        _x, _y = parse_timestamp_and_digit_graph_coordinates(stream.stdout.readline())
+    _x, _y = parse_timestamp_and_digit_graph_coordinates(filehandler.read_till_eof(file))
 
     if should_slide and len(x) >= slide_window:
         for i in range(len(_x)):

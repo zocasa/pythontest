@@ -23,13 +23,10 @@ sporadic_line_1 = "I never freeze\n"
 sporadic_line_2 = "Inception\n"
 sporadic_lines = [sporadic_line_1, sporadic_line_2]
 
-# 10%
-target_line_1 = "x is: " + str(time.time()) + ", y is : " + str(random.randrange(20*scale, 100*scale)/scale) + ".\n"
-target_lines = [target_line_1]
-
 
 if __name__ == "__main__":
     filename = filehandler.get_filename()
+    file = open(filename, 'w+')
 
     while True:
         lines_to_write = []
@@ -49,7 +46,7 @@ if __name__ == "__main__":
             lines = sporadic_lines
             should_repeat = True
         else:
-            lines = target_lines
+            lines = ["x is: " + str(time.time()) + ", y is: " + str(random.randrange(20*scale, 100*scale)/scale) + ".\n"]
 
         i = random.randrange(0, len(lines))
         lines_to_write.append(lines[i])
@@ -65,4 +62,4 @@ if __name__ == "__main__":
         if sleep_timer < 0.25:
             time.sleep(sleep_timer)
 
-        filehandler.write_to_file(filename, lines_to_write)
+        file.writelines(lines_to_write)
