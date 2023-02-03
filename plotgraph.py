@@ -44,6 +44,7 @@ def create_graph(file, should_slide=True, slide_window=20):
 
     f = functools.partial(update_graph, plot=subplot, file=file,
                           should_slide=should_slide, slide_window=slide_window, x=x, y=y)
+
     # Die but do not delete the variable assignment
     ani = animation.FuncAnimation(fig, f, interval=1)
 
