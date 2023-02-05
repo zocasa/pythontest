@@ -30,20 +30,21 @@ def parse_timestamp_and_digit_graph_coordinates(source_lines):
         if match:
             sub_pattern = re.compile(r'\d+\.\d+')
             datapoint = sub_pattern.findall(match.group())
-            x.append(datetime.datetime.fromtimestamp(float(datapoint[0])))
+            x.append(str(datetime.datetime.fromtimestamp(float(datapoint[0]))))
             y.append(float(datapoint[1]))
 
     return x, y
 
 
 def create_graph(file, should_slide=True, slide_window=20):
-    x = collections.deque()
-    y = collections.deque()
+    x_labels = collections.deque()
+    y_values = collections.deque()
 
     fig, subplot = plt.subplots(constrained_layout=True)
 
     f = functools.partial(update_graph, plot=subplot, file=file,
-                          should_slide=should_slide, slide_window=slide_window, x=x, y=y)
+                          should_slide=should_slide, slide_window=slide_window,
+                          x_labels=x_labels, y_values=y_values)
 
     # Die but do not delete the variable assignment
     ani = animation.FuncAnimation(fig, f, interval=1)
@@ -53,24 +54,31 @@ def create_graph(file, should_slide=True, slide_window=20):
     return fig, subplot
 
 
-def update_graph(frame, plot, file, should_slide, slide_window, x, y):
+def update_graph(frame, plot, file, should_slide, slide_window, x_labels, y_values):
     plot.cla()
 
-    _x = collections.deque()
-    _y = collections.deque()
+    _x_labels = collections.deque()
+    _y_values = collections.deque()
 
-    _x, _y = parse_timestamp_and_digit_graph_coordinates(filehandler.read_till_eof(file))
+    _x_labels, _y_values = parse_timestamp_and_digit_graph_coordinates(filehandler.read_till_eof(file))
 
-    if should_slide and len(x) >= slide_window:
-        for i in range(len(_x)):
-            x.popleft()
-            y.popleft()
+    if should_slide and len(x_labels) >= slide_window:
+        for i in range(len(_x_labels)):
+            x_labels.popleft()
+            y_values.popleft()
 
-    x.extend(_x)
-    y.extend(_y)
+    x_labels.extend(_x_labels)
+    y_values.extend(_y_values)
 
-    plot.plot(x, y, 'bo', linestyle="--")
+    _x_values = []
+    if len(x_labels) > 0:
+        _x_values = [*range(1, len(x_labels)+1)]
 
-    if len(x) > 0:
-        plot.scatter(x[-1], y[-1])
-        plot.text(x[-1], y[-1] + 2, "{}".format(y[-1]))
+    plot.plot(_x_values, y_values, 'bo', linestyle="--")
+
+    if len(x_labels) > 0:
+        plt.xlim([0, 23])
+        plt.ylim([0, 110])
+        plot.set_xticklabels(x_labels)
+        plot.scatter(_x_values[-1], y_values[-1])
+        plot.text(_x_values[-1], y_values[-1] + 2, "{}".format(y_values[-1]))
