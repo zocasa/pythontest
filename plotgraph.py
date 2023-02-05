@@ -72,13 +72,14 @@ def update_graph(frame, plot, file, should_slide, slide_window, x_labels, y_valu
 
     _x_values = []
     if len(x_labels) > 0:
-        _x_values = [*range(1, len(x_labels)+1)]
+        _x_values = [*range(0, len(x_labels))]
 
     plot.plot(_x_values, y_values, 'bo', linestyle="--")
 
     if len(x_labels) > 0:
-        plt.xlim([0, 23])
+        plt.xticks(_x_values)
+        plt.xlim([0, 21])
         plt.ylim([0, 110])
-        plot.set_xticklabels(x_labels)
+        plot.set_xticklabels(x_labels, rotation=45, ha='right')
         plot.scatter(_x_values[-1], y_values[-1])
         plot.text(_x_values[-1], y_values[-1] + 2, "{}".format(y_values[-1]))
