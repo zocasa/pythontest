@@ -19,12 +19,10 @@ and use `slide_window` with it to control the width of the sliding window
 
 ## TODO (In no particular order)
 * Separate out argParser
-* Graph is Jell-O TT
 * Clean and some comment?
 * PRETTIFY GRAPH
 * Better `loggenerator` (one with map kind of thing for better interlacing)
 * logging (and testing in the `FuncAnimation`'s function)
-* Regex pattern does not account for integers (need to test)
 
 ## Things used (not in detail)
 * File opening
