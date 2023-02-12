@@ -24,6 +24,7 @@ and use `slide_window` with it to control the width of the sliding window
 * PRETTIFY GRAPH
 * Better `loggenerator` (one with map kind of thing for better interlacing)
 * logging (and testing in the `FuncAnimation`'s function)
+* Regex pattern does not account for integers (need to test)
 
 ## Things used (not in detail)
 * File opening

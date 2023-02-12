@@ -20,22 +20,6 @@ def get_graph_title():
 
 
 # stolen from https://towardsdatascience.com/plotting-live-data-with-matplotlib-d871fac7500b
-def parse_timestamp_and_digit_graph_coordinates(source_lines):
-    x = collections.deque()
-    y = collections.deque()
-
-    for line in source_lines:
-        pattern = re.compile(r'x is: \d+\.\d+, y is: \d+\.\d+')
-        match = pattern.search(line)
-        if match:
-            sub_pattern = re.compile(r'\d+\.\d+')
-            datapoint = sub_pattern.findall(match.group())
-            x.append(str(datetime.datetime.fromtimestamp(float(datapoint[0]))))
-            y.append(float(datapoint[1]))
-
-    return x, y
-
-
 def create_graph(file, should_slide=True, slide_window=20):
     x_labels = collections.deque()
     y_values = collections.deque()
@@ -86,3 +70,25 @@ def update_graph(frame, plot, file, should_slide, slide_window, x_labels, y_valu
         plot.set_xticklabels(x_labels, rotation=45, ha='right')
         plot.scatter(_x_values[-1], y_values[-1])
         plot.text(_x_values[-1], y_values[-1] + 2, "{}".format(y_values[-1]))
+
+
+def parse_timestamp_and_digit_graph_coordinates(source_lines):
+    x = collections.deque()
+    y = collections.deque()
+
+    for line in source_lines:
+        pattern = re.compile(r'x is: (\d+\.\d+|\d+), y is: (\d+\.\d+|\d+)')
+        match = pattern.search(line)
+        if match:
+            sub_pattern = re.compile(r'(\d+\.\d+|\d+)')
+            datapoint = sub_pattern.findall(match.group())
+            x.append(str(datetime.datetime.fromtimestamp(float(datapoint[0]))))
+            y.append(float(datapoint[1]))
+
+    return x, y
+
+
+if __name__ == "__main__":
+    filename = filehandler.get_filename()
+    file = filehandler.open_read_file(filename, True)
+    create_graph(file)
