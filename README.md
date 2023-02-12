@@ -6,14 +6,14 @@ In `requirements.txt`
 
 ## Run
 1. `python3 loggenerator.py -f .custom_log.txt`
-2. `python3 main.py -f .custom_log.txt`
+2. `python3 plotgraph.py -f .custom_log.txt`
 
 ### Things to tinker
-* in `main.py`, change `open_read_file`'s `beginning` to `false` 
+* in `plotgraph.py`, change `open_read_file`'s `beginning` to `false` 
 to read from current position of log instead of beginning
 * in `loggenerator.py` when opening file, change `w+` to `a+` to not overwrite file
 * in `loggenerator.py`, some not very useful constants to tinker
-* in `main.py`, while calling the `plotgraph`'s `create_graph`,
+* in `plotgraph.py`, while calling the `plotgraph`'s `create_graph`,
 pass optionals `should_slide` which will plot a sliding graph (new updates will push older ones out of frame)
 and use `slide_window` with it to control the width of the sliding window
 
@@ -39,3 +39,4 @@ and use `slide_window` with it to control the width of the sliding window
 * argParse
 * regex
   * and the plague
+* zip (zoom-zoom)
