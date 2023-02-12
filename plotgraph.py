@@ -46,10 +46,14 @@ def update_graph(frame, plot, file, should_slide, slide_window, x_labels, y_valu
 
     _x_labels, _y_values = parse_timestamp_and_digit_graph_coordinates(filehandler.read_till_eof(file))
 
-    if should_slide and len(x_labels) >= slide_window:
+    overflow = len(x_labels) + len(_x_labels) - slide_window
+    if should_slide and overflow > 0:
         for i in range(len(_x_labels)):
-            x_labels.popleft()
-            y_values.popleft()
+            if i < overflow:
+                x_labels.popleft()
+                y_values.popleft()
+            else:
+                break
 
     x_labels.extend(_x_labels)
     y_values.extend(_y_values)
