@@ -84,10 +84,8 @@ def parse_timestamp_and_digit_graph_coordinates(source_lines):
         pattern = re.compile(r'x is: (\d+\.\d+|\d+), y is: (\d+\.\d+|\d+)')
         match = pattern.search(line)
         if match:
-            sub_pattern = re.compile(r'(\d+\.\d+|\d+)')
-            datapoint = sub_pattern.findall(match.group())
-            x.append(str(datetime.datetime.fromtimestamp(float(datapoint[0]))))
-            y.append(float(datapoint[1]))
+            x.append(str(datetime.datetime.fromtimestamp(float(match.group(1)))))
+            y.append(float(match.group(2)))
 
     return x, y
 
