@@ -10,6 +10,7 @@ active_projects_config_data_delimiter = '::'
 
 class Git:
     IS_VALID_DIRECTORY = 'git rev-parse --is-inside-work-tree'
+    IS_ROOT_DIRECTORY = 'git rev-parse --show-toplevel'
     HAS_COMMITS = 'git rev-list --count origin/main..@'
     REMOTE_BRANCHES = 'git branch -r'
 
@@ -57,15 +58,50 @@ def get_active_project_details():
     return active_project_types, active_project_paths
 
 
-def handle_active_projects(function):
+def process_active_projects(processor_function, *args):
     active_project_details = zip(*get_active_project_details())
     for active_project_type, active_project_path in active_project_details:
-        successful, _ = run_command(Git.IS_VALID_DIRECTORY)
-        if successful:
-            if active_project_type.lower() == ProjectType.DEFAULT.value:
-                successful, _ = run_command('cd', active_project_path)
-                if successful:
-                    function()
+        project_type = ProjectType(active_project_type.lower())
+        match project_type:
+            case ProjectType.DEFAULT:
+                process_default_project(active_project_path, processor_function, *args)
+            case ProjectType.JAVA_WORKSPACE:
+                process_java_workspace_project(active_project_path, processor_function, *args)
+
+
+def process_default_project(path, processor_function, *args):
+    if path is '/':
+        return
+
+    successful, _ = run_command('cd', path)
+
+    if successful:
+        successful, output = run_command(Git.IS_ROOT_DIRECTORY)
+
+        if successful and path is not output[0]:
+            successful = False
+
+    if successful:
+        processor_function(*args)
+
+
+def process_java_workspace_project(path, processor_function, *args):
+    if path is '/':
+        return
+
+    tmp_path = path
+    if path[-1] is not '/':
+        tmp_path += '/'
+    tmp_path += 'src/'
+
+    successful, _ = run_command('cd', tmp_path)
+
+    if successful:
+        _, output = run_command('ls')
+        packages = output[0].split()
+
+        for package in packages:
+            process_default_project(tmp_path + package, processor_function, *args)
 
 
 def rebase_project():
@@ -91,7 +127,7 @@ def rebase_project():
 
 
 def rebase_projects():
-    handle_active_projects(rebase_project)
+    process_active_projects(rebase_project)
 
 
 def push_local_work():
@@ -122,7 +158,7 @@ def push_local_work():
 
 
 def push_local_works():
-    handle_active_projects(push_local_work)
+    process_active_projects(push_local_work)
 
 
 def cleanup_remote_branches(timestamp='0', delete_all=False):
@@ -160,9 +196,7 @@ def has_commits():
     return int(output[0]) > 0
 
 
-def run_command(command, args=None):
-    if args is None:
-        args = []
+def run_command(command, *args):
     process = subprocess.run([*command.split(), *args], capture_output=True, text=True)
     return process.returncode == 0, process.stdout.splitlines()
 
